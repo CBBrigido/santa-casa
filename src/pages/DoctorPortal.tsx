@@ -153,6 +153,9 @@ export default function DoctorPortal() {
             </TableBody>
           </Table>
         </div>
+
+        {/* AI Chat */}
+        <AIChatWidget />
       </div>
     </AppLayout>
   );
