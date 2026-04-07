@@ -1,6 +1,7 @@
 import { AppLayout } from "@/components/AppLayout";
 import { doctorPortalData } from "@/data/mockData";
 import { StatusBadge } from "@/components/StatusBadge";
+import { AIChatWidget } from "@/components/AIChatWidget";
 import { Button } from "@/components/ui/button";
 import { DollarSign, FileText, TrendingUp, Clock, MessageSquare } from "lucide-react";
 import {
@@ -152,6 +153,9 @@ export default function DoctorPortal() {
             </TableBody>
           </Table>
         </div>
+
+        {/* AI Chat */}
+        <AIChatWidget />
       </div>
     </AppLayout>
   );
