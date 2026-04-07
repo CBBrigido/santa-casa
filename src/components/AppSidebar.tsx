@@ -1,6 +1,7 @@
 import { LayoutDashboard, Columns3, UserCircle } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
+import { useRole } from "@/contexts/RoleContext";
 import {
   Sidebar,
   SidebarContent,
@@ -14,32 +15,38 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const navItems = [
+const adminItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Fluxo de Pagamento", url: "/kanban", icon: Columns3 },
   { title: "Portal do Médico", url: "/doctor", icon: UserCircle },
 ];
 
+const doctorItems = [
+  { title: "Meu Portal", url: "/doctor", icon: UserCircle },
+];
+
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
+  const { role } = useRole();
+  const items = role === "admin" ? adminItems : doctorItems;
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="p-4">
-        {!collapsed && (
+        {!collapsed ? (
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center">
               <span className="text-sm font-bold text-sidebar-primary-foreground">H</span>
             </div>
             <div>
               <h2 className="text-sm font-semibold text-sidebar-foreground">HealthFin</h2>
-              <p className="text-xs text-sidebar-foreground/60">Gestão de Honorários</p>
+              <p className="text-xs text-sidebar-foreground/60">
+                {role === "admin" ? "Gestão de Honorários" : "Portal Médico"}
+              </p>
             </div>
           </div>
-        )}
-        {collapsed && (
+        ) : (
           <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center mx-auto">
             <span className="text-sm font-bold text-sidebar-primary-foreground">H</span>
           </div>
@@ -50,7 +57,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
+              {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink
