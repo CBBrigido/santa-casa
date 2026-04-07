@@ -152,7 +152,6 @@ export default function DoctorPortal() {
             </TableBody>
           </Table>
         </div>
-        </div>
       </div>
     </AppLayout>
   );
