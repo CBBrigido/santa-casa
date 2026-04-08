@@ -22,11 +22,11 @@ const timelineIcon: Record<string, string> = {
 export default function DoctorPortal() {
   return (
     <AppLayout title="Portal do Médico">
-      <div className="space-y-6 animate-fade-in max-w-6xl">
+      <div className="space-y-6 animate-fade-in w-full">
         {/* Doctor header */}
         <div className="bg-card rounded-lg shadow-card p-6 flex flex-col md:flex-row md:items-center gap-4">
-          <div className="h-16 w-16 rounded-full gradient-primary flex items-center justify-center flex-shrink-0">
-            <span className="text-xl font-bold text-primary-foreground">CS</span>
+          <div className="h-16 w-16 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "hsl(220 53% 26%)" }}>
+            <span className="text-xl font-bold text-white">CS</span>
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold text-card-foreground">{d.name}</h2>
@@ -53,7 +53,7 @@ export default function DoctorPortal() {
             </div>
             <p className="text-2xl font-bold font-mono text-card-foreground">{formatCurrency(d.expectedEarnings)}</p>
           </div>
-          <div className="bg-card rounded-lg shadow-card p-5 border-l-4 border-l-secondary">
+          <div className="bg-card rounded-lg shadow-card p-5 border-l-4" style={{ borderLeftColor: "hsl(220 53% 45%)" }}>
             <div className="flex items-center gap-2 mb-1">
               <DollarSign className="h-4 w-4 text-muted-foreground" />
               <span className="text-xs font-medium uppercase text-muted-foreground">Confirmado</span>

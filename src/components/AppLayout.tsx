@@ -1,9 +1,9 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useRole } from "@/contexts/RoleContext";
-import { Bell, ArrowLeftRight } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Bell } from "lucide-react";
 import { FloatingChat } from "@/components/FloatingChat";
-import { useNavigate } from "react-router-dom";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -11,48 +11,36 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children, title }: AppLayoutProps) {
-  const { role, toggleRole } = useRole();
-  const navigate = useNavigate();
-
-  const handleToggle = () => {
-    toggleRole();
-    if (role === "admin") {
-      navigate("/doctor");
-    } else {
-      navigate("/");
-    }
-  };
+  const { role } = useRole();
+  const { role: authRole } = useAuth();
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-14 flex items-center justify-between border-b bg-card px-4 shadow-card">
+            <h1 className="text-lg font-semibold text-foreground">{title}</h1>
             <div className="flex items-center gap-3">
-              <SidebarTrigger />
-              <h1 className="text-lg font-semibold text-foreground">{title}</h1>
-            </div>
-            <div className="flex items-center gap-3">
-              {/* Role Switcher */}
-              <button
-                onClick={handleToggle}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-muted/50 hover:bg-muted transition-colors text-sm"
+              <span
+                className="text-xs font-medium px-2.5 py-1 rounded-full"
+                style={{
+                  background: "hsl(220 53% 26% / 0.1)",
+                  color: "hsl(220 53% 26%)",
+                }}
               >
-                <ArrowLeftRight className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-muted-foreground text-xs font-medium">
-                  {role === "admin" ? "Admin" : "Médico"}
-                </span>
-                <span className="h-2 w-2 rounded-full" style={{ background: role === "admin" ? "hsl(210 70% 50%)" : "hsl(160 50% 45%)" }} />
-              </button>
-
+                {authRole === "admin" ? "Administrador" : "Médico"}
+              </span>
               <button className="relative p-2 rounded-lg hover:bg-muted transition-colors">
                 <Bell className="h-5 w-5 text-muted-foreground" />
                 <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive" />
               </button>
-              <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center">
-                <span className="text-xs font-semibold text-primary-foreground">
-                  {role === "admin" ? "AD" : "CS"}
+              <div
+                className="h-8 w-8 rounded-full flex items-center justify-center"
+                style={{ background: "hsl(220 53% 26%)" }}
+              >
+                <span className="text-xs font-semibold text-white">
+                  {authRole === "admin" ? "AD" : "MD"}
                 </span>
               </div>
             </div>

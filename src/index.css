@@ -6,62 +6,63 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 215 25% 15%;
+    --background: 220 20% 97%;
+    --foreground: 220 40% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 220 40% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 220 40% 15%;
 
-    --primary: 210 70% 45%;
+    /* #203667 = hsl(220 53% 26%) */
+    --primary: 220 53% 26%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 160 45% 40%;
+    --secondary: 152 52% 38%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 15% 93%;
-    --muted-foreground: 215 15% 50%;
+    --muted: 220 15% 93%;
+    --muted-foreground: 220 15% 48%;
 
-    --accent: 210 30% 90%;
-    --accent-foreground: 210 70% 35%;
+    --accent: 220 40% 92%;
+    --accent-foreground: 220 53% 22%;
 
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 15% 90%;
-    --input: 210 15% 90%;
-    --ring: 210 70% 45%;
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 220 53% 26%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 215 25% 12%;
-    --sidebar-foreground: 210 15% 85%;
-    --sidebar-primary: 210 70% 55%;
+    --sidebar-background: 220 53% 14%;
+    --sidebar-foreground: 220 20% 88%;
+    --sidebar-primary: 220 60% 62%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 20% 18%;
-    --sidebar-accent-foreground: 210 15% 90%;
-    --sidebar-border: 215 20% 20%;
-    --sidebar-ring: 210 70% 55%;
+    --sidebar-accent: 220 45% 20%;
+    --sidebar-accent-foreground: 220 20% 94%;
+    --sidebar-border: 220 40% 22%;
+    --sidebar-ring: 220 60% 62%;
 
     /* Status colors */
-    --status-ok: 145 60% 42%;
+    --status-ok: 152 52% 38%;
     --status-pending: 45 90% 50%;
     --status-issue: 0 72% 55%;
-    --status-processing: 210 70% 55%;
+    --status-processing: 220 53% 50%;
 
     /* Chart palette */
-    --chart-1: 210 70% 50%;
-    --chart-2: 160 50% 45%;
+    --chart-1: 220 53% 35%;
+    --chart-2: 152 52% 42%;
     --chart-3: 45 85% 55%;
-    --chart-4: 280 55% 55%;
+    --chart-4: 220 53% 60%;
     --chart-5: 15 75% 55%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(210 70% 45%), hsl(210 70% 60%));
-    --gradient-secondary: linear-gradient(135deg, hsl(160 45% 38%), hsl(160 50% 50%));
-    --gradient-accent: linear-gradient(135deg, hsl(210 30% 95%), hsl(210 20% 98%));
+    --gradient-primary: linear-gradient(135deg, hsl(220 53% 20%), hsl(220 53% 36%));
+    --gradient-secondary: linear-gradient(135deg, hsl(152 52% 30%), hsl(152 52% 46%));
+    --gradient-accent: linear-gradient(135deg, hsl(220 30% 95%), hsl(220 15% 98%));
 
     /* Shadows */
     --shadow-card: 0 1px 3px hsl(215 25% 15% / 0.06), 0 1px 2px hsl(215 25% 15% / 0.04);

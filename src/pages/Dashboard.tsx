@@ -2,11 +2,12 @@ import { AppLayout } from "@/components/AppLayout";
 import { KpiCard } from "@/components/KpiCard";
 import { FilterBar } from "@/components/FilterBar";
 import { StatusBadge } from "@/components/StatusBadge";
-import { kpiData, paymentEvolution, topDoctors, distributionByType, taxesBreakdown, paymentRecords } from "@/data/mockData";
+import { kpiData, paymentEvolution, topDoctors, distributionByType, paymentRecords, statusDrilldown } from "@/data/mockData";
+
 import { DollarSign, Clock, XCircle, CheckCircle, Receipt, AlertTriangle } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from "recharts";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -33,32 +34,29 @@ export default function Dashboard() {
 
         {/* Charts Row 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Line Chart */}
           <div className="bg-card rounded-lg shadow-card p-5">
             <h3 className="text-sm font-semibold text-card-foreground mb-4">Evolução de Pagamentos</h3>
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={paymentEvolution}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(210 15% 90%)" />
-                <XAxis dataKey="month" tick={{ fontSize: 11 }} stroke="hsl(215 15% 50%)" />
-                <YAxis tick={{ fontSize: 11 }} stroke="hsl(215 15% 50%)" tickFormatter={(v) => `${v / 1000}k`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 15% 90%)" />
+                <XAxis dataKey="month" tick={{ fontSize: 11 }} stroke="hsl(220 15% 50%)" />
+                <YAxis tick={{ fontSize: 11 }} stroke="hsl(220 15% 50%)" tickFormatter={(v) => `${v / 1000}k`} />
                 <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                <Legend />
-                <Line type="monotone" dataKey="value" name="Faturado" stroke="hsl(210 70% 50%)" strokeWidth={2} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="paid" name="Pago" stroke="hsl(160 50% 45%)" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="value" name="Faturado" stroke="hsl(220 53% 45%)" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="paid" name="Pago" stroke="hsl(152 52% 42%)" strokeWidth={2} dot={{ r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Bar Chart - Top Doctors */}
           <div className="bg-card rounded-lg shadow-card p-5">
             <h3 className="text-sm font-semibold text-card-foreground mb-4">Top Prestadores por Valor</h3>
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={topDoctors} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(210 15% 90%)" />
-                <XAxis type="number" tick={{ fontSize: 11 }} stroke="hsl(215 15% 50%)" tickFormatter={(v) => `${v / 1000}k`} />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(215 15% 50%)" width={90} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 15% 90%)" />
+                <XAxis type="number" tick={{ fontSize: 11 }} stroke="hsl(220 15% 50%)" tickFormatter={(v) => `${v / 1000}k`} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(220 15% 50%)" width={90} />
                 <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                <Bar dataKey="value" name="Valor" fill="hsl(210 70% 50%)" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="value" name="Valor" fill="hsl(220 53% 40%)" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -66,7 +64,6 @@ export default function Dashboard() {
 
         {/* Charts Row 2 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Pie Chart */}
           <div className="bg-card rounded-lg shadow-card p-5">
             <h3 className="text-sm font-semibold text-card-foreground mb-4">Distribuição por Tipo</h3>
             <ResponsiveContainer width="100%" height={260}>
@@ -81,22 +78,42 @@ export default function Dashboard() {
             </ResponsiveContainer>
           </div>
 
-          {/* Stacked Bar - Taxes */}
+          {/* Detalhamento por Status */}
           <div className="bg-card rounded-lg shadow-card p-5">
-            <h3 className="text-sm font-semibold text-card-foreground mb-4">Impostos por Competência</h3>
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={taxesBreakdown}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(210 15% 90%)" />
-                <XAxis dataKey="month" tick={{ fontSize: 11 }} stroke="hsl(215 15% 50%)" />
-                <YAxis tick={{ fontSize: 11 }} stroke="hsl(215 15% 50%)" tickFormatter={(v) => `${v / 1000}k`} />
-                <Tooltip formatter={(v: number) => formatCurrency(v)} />
-                <Legend />
-                <Bar dataKey="iss" name="ISS" stackId="a" fill="hsl(210 70% 50%)" />
-                <Bar dataKey="irrf" name="IRRF" stackId="a" fill="hsl(160 50% 45%)" />
-                <Bar dataKey="inss" name="INSS" stackId="a" fill="hsl(45 85% 55%)" />
-                <Bar dataKey="pis" name="PIS/COFINS" stackId="a" fill="hsl(280 55% 55%)" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <h3 className="text-sm font-semibold text-card-foreground mb-4">Detalhamento por Status</h3>
+            <div className="grid grid-cols-4 gap-3 h-[232px]">
+              {[
+                { key: "pending",    label: "Pendente",         color: "hsl(45 90% 50%)",  data: statusDrilldown.pending    },
+                { key: "denied",     label: "Glosado",          color: "hsl(0 72% 55%)",   data: statusDrilldown.denied     },
+                { key: "processing", label: "Em Processamento", color: "hsl(220 53% 45%)", data: statusDrilldown.processing },
+                { key: "paid",       label: "Pago",             color: "hsl(145 60% 42%)", data: statusDrilldown.paid       },
+              ].map(({ key, label, color, data }) => {
+                const max = Math.max(...data.map(d => d.value));
+                return (
+                  <div key={key} className="flex flex-col min-h-0">
+                    <div className="text-[10px] font-semibold uppercase tracking-wide px-1 pb-1.5 border-b mb-1.5" style={{ color }}>
+                      {label}
+                    </div>
+                    <div className="flex-1 overflow-y-auto space-y-1.5 pr-0.5">
+                      {data.map((item, i) => (
+                        <div key={i} className="flex items-center gap-1.5">
+                          <span className="text-[9px] text-muted-foreground truncate w-[88px] flex-shrink-0">{item.name}</span>
+                          <div className="flex-1 h-3 rounded-sm overflow-hidden bg-muted">
+                            <div
+                              className="h-full rounded-sm"
+                              style={{ width: `${(item.value / max) * 100}%`, background: color }}
+                            />
+                          </div>
+                          <span className="text-[9px] font-mono text-muted-foreground flex-shrink-0 w-[34px] text-right">
+                            {(item.value / 1000).toFixed(0)}k
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 

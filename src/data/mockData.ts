@@ -1,5 +1,48 @@
 // Mock data for the Medical Fee Management System
 
+export const statusDrilldown = {
+  pending: [
+    { name: "Clínica Alpha",        value: 48200 },
+    { name: "Centro Médico Beta",   value: 38500 },
+    { name: "Hospital Gama",        value: 27100 },
+    { name: "Serv. Médicos Delta",  value: 21400 },
+    { name: "Inst. Saúde Épsilon",  value: 18900 },
+    { name: "Clínica Zeta",         value: 15300 },
+    { name: "Grupo Médico Eta",     value: 12800 },
+    { name: "Serv. Clínicos Teta",  value:  9600 },
+  ],
+  denied: [
+    { name: "Anestesia Iota",       value: 14200 },
+    { name: "Centro Cirúr. Capa",   value: 10800 },
+    { name: "Clínica Lambda",       value:  8500 },
+    { name: "Serv. Médicos Mi",     value:  7200 },
+    { name: "Inst. Diagnós. Ni",    value:  5900 },
+    { name: "Grupo Saúde Xi",       value:  4300 },
+    { name: "Clínica Ômicron",      value:  3800 },
+    { name: "Centro Médico Pi",     value:  2900 },
+  ],
+  processing: [
+    { name: "Hospital Rô",          value: 52400 },
+    { name: "Clínica Sigma",        value: 41200 },
+    { name: "Serv. Médicos Tau",    value: 29800 },
+    { name: "Instituto Ipsilon",    value: 22100 },
+    { name: "Centro Médico Fi",     value: 18700 },
+    { name: "Clínica Qui",          value: 15400 },
+    { name: "Grupo Médico Psi",     value: 12300 },
+    { name: "Serv. Clínicos Ômega", value:  9800 },
+  ],
+  paid: [
+    { name: "Dr. A. Souza",         value: 89500 },
+    { name: "Dra. B. Pereira",      value: 76200 },
+    { name: "Dr. C. Mendes",        value: 68900 },
+    { name: "Dra. D. Rocha",        value: 54300 },
+    { name: "Dr. E. Cardoso",       value: 48700 },
+    { name: "Dra. F. Martins",      value: 42100 },
+    { name: "Dr. G. Barbosa",       value: 35600 },
+    { name: "Dra. H. Carvalho",     value: 28400 },
+  ],
+};
+
 export const kpiData = {
   pendingAmount: 284750.00,
   deniedAmount: 42380.50,
@@ -9,18 +52,10 @@ export const kpiData = {
 };
 
 export const paymentEvolution = [
-  { month: "Jan", value: 145000, paid: 120000 },
-  { month: "Fev", value: 162000, paid: 155000 },
-  { month: "Mar", value: 178000, paid: 168000 },
-  { month: "Abr", value: 195000, paid: 180000 },
-  { month: "Mai", value: 210000, paid: 198000 },
-  { month: "Jun", value: 225000, paid: 215000 },
-  { month: "Jul", value: 198000, paid: 190000 },
-  { month: "Ago", value: 232000, paid: 220000 },
-  { month: "Set", value: 245000, paid: 235000 },
-  { month: "Out", value: 260000, paid: 248000 },
-  { month: "Nov", value: 275000, paid: 260000 },
-  { month: "Dez", value: 290000, paid: 278000 },
+  { month: "Jan/26", value: 145000, paid: 120000 },
+  { month: "Fev/26", value: 162000, paid: 155000 },
+  { month: "Mar/26", value: 178000, paid: 168000 },
+  { month: "Abr/26", value: 195000, paid: 180000 },
 ];
 
 export const topDoctors = [
@@ -39,23 +74,21 @@ export const distributionByType = [
 ];
 
 export const taxesBreakdown = [
-  { month: "Jan", iss: 8200, irrf: 12500, inss: 6800, pis: 2100 },
-  { month: "Fev", iss: 9100, irrf: 13200, inss: 7200, pis: 2300 },
-  { month: "Mar", iss: 9800, irrf: 14100, inss: 7800, pis: 2500 },
-  { month: "Abr", iss: 10500, irrf: 15000, inss: 8200, pis: 2700 },
-  { month: "Mai", iss: 11200, irrf: 15800, inss: 8800, pis: 2900 },
-  { month: "Jun", iss: 11800, irrf: 16500, inss: 9200, pis: 3100 },
+  { month: "Jan/26", iss: 8200, irrf: 12500, inss: 6800, pis: 2100 },
+  { month: "Fev/26", iss: 9100, irrf: 13200, inss: 7200, pis: 2300 },
+  { month: "Mar/26", iss: 9800, irrf: 14100, inss: 7800, pis: 2500 },
+  { month: "Abr/26", iss: 10500, irrf: 15000, inss: 8200, pis: 2700 },
 ];
 
 export const paymentRecords = [
-  { id: 1, date: "2024-03-15", doctor: "Dr. Silva", rule: "Tabela CBHPM", amount: 12500.00, status: "paid", type: "Procedimento", alert: null },
-  { id: 2, date: "2024-03-14", doctor: "Dra. Santos", rule: "Contrato PJ", amount: 8750.00, status: "pending", type: "Plantão", alert: null },
-  { id: 3, date: "2024-03-14", doctor: "Dr. Oliveira", rule: "Tabela AMB", amount: 4200.00, status: "denied", type: "Procedimento", alert: "Glosa por inconsistência" },
-  { id: 4, date: "2024-03-13", doctor: "Dr. Costa", rule: "Produtividade", amount: 15800.00, status: "processing", type: "Produtividade", alert: null },
-  { id: 5, date: "2024-03-13", doctor: "Dra. Lima", rule: "Tabela CBHPM", amount: 6300.00, status: "paid", type: "Procedimento", alert: null },
-  { id: 6, date: "2024-03-12", doctor: "Dr. Ferreira", rule: "CLT", amount: 22000.00, status: "paid", type: "Plantão", alert: null },
-  { id: 7, date: "2024-03-12", doctor: "Dr. Silva", rule: "Avulso", amount: 3200.00, status: "pending", type: "Procedimento", alert: "Item avulso - verificar" },
-  { id: 8, date: "2024-03-11", doctor: "Dra. Santos", rule: "Contrato PJ", amount: 9100.00, status: "review", type: "Plantão", alert: "Regra incorreta aplicada" },
+  { id: 1, date: "2026-04-05", doctor: "Dr. Silva",    rule: "Tabela CBHPM", amount: 12500.00, status: "paid",       type: "Procedimento", alert: null },
+  { id: 2, date: "2026-04-04", doctor: "Dra. Santos",  rule: "Contrato PJ",  amount: 8750.00,  status: "pending",    type: "Plantão",      alert: null },
+  { id: 3, date: "2026-04-04", doctor: "Dr. Oliveira", rule: "Tabela AMB",   amount: 4200.00,  status: "denied",     type: "Procedimento", alert: "Glosa por inconsistência" },
+  { id: 4, date: "2026-04-03", doctor: "Dr. Costa",    rule: "Produtividade",amount: 15800.00, status: "processing", type: "Produtividade",alert: null },
+  { id: 5, date: "2026-04-03", doctor: "Dra. Lima",    rule: "Tabela CBHPM", amount: 6300.00,  status: "paid",       type: "Procedimento", alert: null },
+  { id: 6, date: "2026-04-02", doctor: "Dr. Ferreira", rule: "CLT",          amount: 22000.00, status: "paid",       type: "Plantão",      alert: null },
+  { id: 7, date: "2026-04-02", doctor: "Dr. Silva",    rule: "Avulso",       amount: 3200.00,  status: "pending",    type: "Procedimento", alert: "Item avulso - verificar" },
+  { id: 8, date: "2026-04-01", doctor: "Dra. Santos",  rule: "Contrato PJ",  amount: 9100.00,  status: "review",     type: "Plantão",      alert: "Regra incorreta aplicada" },
 ];
 
 export type KanbanCard = {
@@ -139,23 +172,23 @@ export const doctorPortalData = {
   pendingInvoices: 3,
   totalPaid: 412800.00,
   timeline: [
-    { date: "2024-03-15", event: "Pagamento liberado", amount: 12500, status: "ok" as const },
-    { date: "2024-03-10", event: "NF aprovada", amount: 8200, status: "ok" as const },
-    { date: "2024-03-05", event: "Aguardando validação", amount: 15800, status: "pending" as const },
-    { date: "2024-02-28", event: "Glosa identificada", amount: 3200, status: "issue" as const },
-    { date: "2024-02-20", event: "Pagamento realizado", amount: 22000, status: "ok" as const },
-    { date: "2024-02-15", event: "Em processamento", amount: 9400, status: "processing" as const },
+    { date: "2026-04-05", event: "Pagamento liberado",    amount: 12500, status: "ok" as const },
+    { date: "2026-04-01", event: "NF aprovada",           amount: 8200,  status: "ok" as const },
+    { date: "2026-03-25", event: "Aguardando validação",  amount: 15800, status: "pending" as const },
+    { date: "2026-03-15", event: "Glosa identificada",    amount: 3200,  status: "issue" as const },
+    { date: "2026-03-05", event: "Pagamento realizado",   amount: 22000, status: "ok" as const },
+    { date: "2026-02-28", event: "Em processamento",      amount: 9400,  status: "processing" as const },
   ],
   paymentHistory: [
-    { period: "Mar/2024", gross: 45200, taxes: 9040, net: 36160, status: "partial" },
-    { period: "Fev/2024", gross: 52800, taxes: 10560, net: 42240, status: "paid" },
-    { period: "Jan/2024", gross: 48500, taxes: 9700, net: 38800, status: "paid" },
-    { period: "Dez/2023", gross: 55200, taxes: 11040, net: 44160, status: "paid" },
-    { period: "Nov/2023", gross: 42100, taxes: 8420, net: 33680, status: "paid" },
+    { period: "Abr/2026", gross: 45200, taxes: 9040, net: 36160, status: "partial" },
+    { period: "Mar/2026", gross: 52800, taxes: 10560, net: 42240, status: "paid" },
+    { period: "Fev/2026", gross: 48500, taxes: 9700,  net: 38800, status: "paid" },
+    { period: "Jan/2026", gross: 55200, taxes: 11040, net: 44160, status: "paid" },
+    { period: "Dez/2025", gross: 42100, taxes: 8420,  net: 33680, status: "paid" },
   ],
   pendingInvoicesList: [
-    { id: 1, period: "01-15 Mar/2024", amount: 12500, dueDate: "2024-03-25", status: "waiting" },
-    { id: 2, period: "16-28 Fev/2024", amount: 8200, dueDate: "2024-03-15", status: "overdue" },
-    { id: 3, period: "01-15 Mar/2024", amount: 15800, dueDate: "2024-03-30", status: "waiting" },
+    { id: 1, period: "01-15 Abr/2026", amount: 12500, dueDate: "2026-04-25", status: "waiting" },
+    { id: 2, period: "16-31 Mar/2026", amount: 8200,  dueDate: "2026-04-05", status: "overdue" },
+    { id: 3, period: "01-05 Abr/2026", amount: 15800, dueDate: "2026-04-30", status: "waiting" },
   ],
 };

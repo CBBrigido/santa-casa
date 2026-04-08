@@ -1,7 +1,8 @@
-import { LayoutDashboard, Columns3, UserCircle } from "lucide-react";
+import { LayoutDashboard, Columns3, UserCircle, LogOut } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
 import { useRole } from "@/contexts/RoleContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -12,13 +13,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
-  useSidebar,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 
 const adminItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Fluxo de Pagamento", url: "/kanban", icon: Columns3 },
-  { title: "Portal do Médico", url: "/doctor", icon: UserCircle },
 ];
 
 const doctorItems = [
@@ -26,33 +26,30 @@ const doctorItems = [
 ];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
-  const collapsed = state === "collapsed";
   const { role } = useRole();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const items = role === "admin" ? adminItems : doctorItems;
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="p-4">
-        {!collapsed ? (
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center">
-              <span className="text-sm font-bold text-sidebar-primary-foreground">H</span>
-            </div>
-            <div>
-              <h2 className="text-sm font-semibold text-sidebar-foreground">HealthFin</h2>
-              <p className="text-xs text-sidebar-foreground/60">
-                {role === "admin" ? "Gestão de Honorários" : "Portal Médico"}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center mx-auto">
-            <span className="text-sm font-bold text-sidebar-primary-foreground">H</span>
-          </div>
-        )}
+    <Sidebar collapsible="none" className="h-screen sticky top-0 flex flex-col">
+      <SidebarHeader className="p-0">
+        <div className="px-5 py-4 flex items-center justify-center border-b border-sidebar-border/30">
+          <img
+            src="/logo.png"
+            alt="Santa Casa Porto Alegre"
+            className="w-full max-h-12 object-contain"
+            style={{ filter: "brightness(0) invert(1)" }}
+          />
+        </div>
       </SidebarHeader>
-      <SidebarContent>
+
+      <SidebarContent className="flex-1 overflow-auto">
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -67,7 +64,7 @@ export function AppSidebar() {
                       activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
                     >
                       <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -76,6 +73,16 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter className="p-3 border-t border-sidebar-border/30">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors"
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Sair</span>
+        </button>
+      </SidebarFooter>
     </Sidebar>
   );
 }

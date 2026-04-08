@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 type Role = "admin" | "doctor";
 
@@ -10,9 +11,11 @@ interface RoleContextType {
 const RoleContext = createContext<RoleContextType>({ role: "admin", toggleRole: () => {} });
 
 export function RoleProvider({ children }: { children: ReactNode }) {
-  const [role, setRole] = useState<Role>("admin");
-  const toggleRole = () => setRole((r) => (r === "admin" ? "doctor" : "admin"));
-  return <RoleContext.Provider value={{ role, toggleRole }}>{children}</RoleContext.Provider>;
+  // Role é gerenciado pelo AuthContext
+  return <RoleContext.Provider value={{ role: "admin", toggleRole: () => {} }}>{children}</RoleContext.Provider>;
 }
 
-export const useRole = () => useContext(RoleContext);
+export const useRole = () => {
+  const { role } = useAuth();
+  return { role, toggleRole: () => {} };
+};
