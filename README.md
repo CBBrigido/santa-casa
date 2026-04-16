@@ -1,3 +1,2 @@
-# Welcome to your Lovable project
+Desenvolvimento de proposta comercial
 
-TODO: Document your project here
