@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
-import { KpiCard } from "@/components/KpiCard";
 import { FilterBar } from "@/components/FilterBar";
 import { StatusBadge } from "@/components/StatusBadge";
-import { kpiData, paymentEvolution, topDoctors, distributionByType, paymentRecords, statusDrilldown } from "@/data/mockData";
+import { FinancialPipeline } from "@/components/FinancialPipeline";
+import { BoxPlotChart } from "@/components/BoxPlotChart";
+import { paymentEvolution, topDoctors, distributionByType, paymentRecords, statusDrilldown } from "@/data/mockData";
 
-import { DollarSign, Clock, XCircle, CheckCircle, Receipt, AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -12,22 +14,24 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 
 const formatCurrency = (v: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
 
 export default function Dashboard() {
+  const [boxPeriod, setBoxPeriod] = useState("todos");
+  const [boxProvider, setBoxProvider] = useState("todos");
+  const [boxProcedure, setBoxProcedure] = useState("todos");
+
   return (
     <AppLayout title="Dashboard Executivo">
       <div className="space-y-6 animate-fade-in">
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          <KpiCard title="Valor Pendente" value={kpiData.pendingAmount} icon={Clock} variant="pending" trend={{ value: 12, positive: false }} />
-          <KpiCard title="Valor Glosado" value={kpiData.deniedAmount} icon={XCircle} variant="destructive" trend={{ value: 5, positive: false }} />
-          <KpiCard title="Liberado s/ Repasse" value={kpiData.releasedNoPayment} icon={DollarSign} variant="muted" />
-          <KpiCard title="Liberado c/ Repasse" value={kpiData.releasedWithPayment} icon={CheckCircle} variant="secondary" trend={{ value: 8, positive: true }} />
-          <KpiCard title="Impostos" value={kpiData.taxes} icon={Receipt} variant="primary" />
-        </div>
+
+        {/* Financial Pipeline */}
+        <FinancialPipeline />
 
         {/* Filters */}
         <FilterBar />
@@ -62,13 +66,76 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Box Plot Chart */}
+        <div className="bg-card rounded-lg shadow-card p-5">
+          <div className="flex items-start justify-between mb-5 flex-wrap gap-3">
+            <div>
+              <h3 className="text-sm font-semibold text-card-foreground">Distribuição de Valores por Procedimento</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Gráfico de Caixa (Box Plot) — variação e comparação entre prestadores por item
+              </p>
+            </div>
+            {/* Filtros do Box Plot */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <Select value={boxPeriod} onValueChange={setBoxPeriod}>
+                <SelectTrigger className="h-8 text-xs w-[130px]">
+                  <SelectValue placeholder="Período" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os períodos</SelectItem>
+                  <SelectItem value="abr26">Abr/2026</SelectItem>
+                  <SelectItem value="mar26">Mar/2026</SelectItem>
+                  <SelectItem value="fev26">Fev/2026</SelectItem>
+                  <SelectItem value="jan26">Jan/2026</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={boxProvider} onValueChange={setBoxProvider}>
+                <SelectTrigger className="h-8 text-xs w-[140px]">
+                  <SelectValue placeholder="Prestador" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos prestadores</SelectItem>
+                  <SelectItem value="dr-silva">Dr. Silva</SelectItem>
+                  <SelectItem value="dra-santos">Dra. Santos</SelectItem>
+                  <SelectItem value="dr-oliveira">Dr. Oliveira</SelectItem>
+                  <SelectItem value="dr-costa">Dr. Costa</SelectItem>
+                  <SelectItem value="dra-lima">Dra. Lima</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={boxProcedure} onValueChange={setBoxProcedure}>
+                <SelectTrigger className="h-8 text-xs w-[150px]">
+                  <SelectValue placeholder="Procedimento" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todos">Todos os tipos</SelectItem>
+                  <SelectItem value="anestesia">Anestesia</SelectItem>
+                  <SelectItem value="cirurgia">Cirurgia Geral</SelectItem>
+                  <SelectItem value="consulta">Consulta</SelectItem>
+                  <SelectItem value="ortopedia">Ortopedia</SelectItem>
+                  <SelectItem value="uti">UTI</SelectItem>
+                  <SelectItem value="radiologia">Radiologia</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <BoxPlotChart />
+        </div>
+
         {/* Charts Row 2 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-card rounded-lg shadow-card p-5">
             <h3 className="text-sm font-semibold text-card-foreground mb-4">Distribuição por Tipo</h3>
             <ResponsiveContainer width="100%" height={260}>
               <PieChart>
-                <Pie data={distributionByType} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} innerRadius={50} paddingAngle={4} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                <Pie
+                  data={distributionByType}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%" cy="50%"
+                  outerRadius={90} innerRadius={50}
+                  paddingAngle={4}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
                   {distributionByType.map((entry, i) => (
                     <Cell key={i} fill={entry.fill} />
                   ))}
@@ -83,10 +150,10 @@ export default function Dashboard() {
             <h3 className="text-sm font-semibold text-card-foreground mb-4">Detalhamento por Status</h3>
             <div className="grid grid-cols-4 gap-3 h-[232px]">
               {[
-                { key: "pending",    label: "Pendente",         color: "hsl(45 90% 50%)",  data: statusDrilldown.pending    },
-                { key: "denied",     label: "Glosado",          color: "hsl(0 72% 55%)",   data: statusDrilldown.denied     },
-                { key: "processing", label: "Em Processamento", color: "hsl(220 53% 45%)", data: statusDrilldown.processing },
-                { key: "paid",       label: "Pago",             color: "hsl(145 60% 42%)", data: statusDrilldown.paid       },
+                { key: "pending",    label: "Valor Pendente",           color: "hsl(45 90% 50%)",  data: statusDrilldown.pending    },
+                { key: "denied",     label: "Valor Glosado",            color: "hsl(0 72% 55%)",   data: statusDrilldown.denied     },
+                { key: "processing", label: "Liberado para Pagamento",  color: "hsl(220 53% 45%)", data: statusDrilldown.processing },
+                { key: "paid",       label: "Valor Faturado",           color: "hsl(145 60% 42%)", data: statusDrilldown.paid       },
               ].map(({ key, label, color, data }) => {
                 const max = Math.max(...data.map(d => d.value));
                 return (
@@ -156,6 +223,7 @@ export default function Dashboard() {
             </TableBody>
           </Table>
         </div>
+
       </div>
     </AppLayout>
   );
