@@ -23,9 +23,9 @@ interface ChatMessage {
 }
 
 const GLOSAS = [
-  { name: "João Silva", value: "R$ 2.000,00", reason: "Falta de autorização" },
-  { name: "Maria Souza", value: "R$ 1.500,00", reason: "Código incompatível" },
-  { name: "Carlos Lima", value: "R$ 2.700,00", reason: "Documentação incompleta" },
+  { name: "Cirurgia Geral", code: "30723013", value: "R$ 2.000,00", reason: "Falta de autorização prévia" },
+  { name: "Anestesia", code: "30101010", value: "R$ 1.500,00", reason: "Código incompatível com o procedimento" },
+  { name: "Ortopedia", code: "30715016", value: "R$ 2.700,00", reason: "Documentação incompleta" },
 ];
 
 const MONTHS = [
@@ -42,12 +42,7 @@ function detectMonth(input: string): string | null {
 }
 
 function detectGlosa(lower: string) {
-  return GLOSAS.find((g) =>
-    g.name
-      .toLowerCase()
-      .split(" ")
-      .some((part) => lower.includes(part))
-  );
+  return GLOSAS.find((g) => lower.includes(g.name.toLowerCase()) || lower.includes(g.code));
 }
 
 function renderContent(content: string) {
@@ -181,7 +176,7 @@ export function AIChatWidget() {
         ) {
           respond(
             "glosa_list",
-            `Aqui estão as glosas:\n\n1. 🗂️ João Silva\n   - Valor: R$ 2.000,00\n   - Motivo: Falta de autorização\n\n2. 🗂️ Maria Souza\n   - Valor: R$ 1.500,00\n   - Motivo: Código incompatível\n\n3. 🗂️ Carlos Lima\n   - Valor: R$ 2.700,00\n   - Motivo: Documentação incompleta\n\n👉 Deseja solicitar revisão de alguma?`,
+            `Aqui estão as glosas:\n\n1. 🗂️ Cirurgia Geral (cód. 30723013)\n   - Valor: R$ 2.000,00\n   - Motivo: Falta de autorização prévia\n\n2. 🗂️ Anestesia (cód. 30101010)\n   - Valor: R$ 1.500,00\n   - Motivo: Código incompatível com o procedimento\n\n3. 🗂️ Ortopedia (cód. 30715016)\n   - Valor: R$ 2.700,00\n   - Motivo: Documentação incompleta\n\n👉 Deseja solicitar revisão de alguma?`,
             [{ label: "Solicitar Revisão", action: "solicitar_revisao" }]
           );
         } else {
@@ -215,7 +210,7 @@ export function AIChatWidget() {
         } else {
           respond(
             "glosa_list",
-            "Para solicitar revisão, clique no botão ou informe o nome do paciente.",
+            "Para solicitar revisão, clique no botão ou informe o nome do procedimento.",
             [{ label: "Solicitar Revisão", action: "solicitar_revisao" }]
           );
         }
@@ -232,7 +227,7 @@ export function AIChatWidget() {
         } else {
           respond(
             "glosa_select",
-            "Não encontrei essa glosa. Informe o nome do paciente: João Silva, Maria Souza ou Carlos Lima.",
+            "Não encontrei esse procedimento. Informe: Cirurgia Geral, Anestesia ou Ortopedia.",
             undefined,
             GLOSAS.map((g) => `${g.name} – ${g.value}`)
           );
