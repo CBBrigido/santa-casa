@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { doctorPortalData } from "@/data/mockData";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
+import { RevisaoDialog } from "@/components/RevisaoDialog";
 import { DollarSign, FileText, TrendingUp, Clock, MessageSquare } from "lucide-react";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -20,8 +22,11 @@ const timelineIcon: Record<string, string> = {
 };
 
 export default function DoctorPortal() {
+  const [revisaoOpen, setRevisaoOpen] = useState(false);
+
   return (
     <AppLayout title="Portal do Médico">
+      <RevisaoDialog open={revisaoOpen} onClose={() => setRevisaoOpen(false)} />
       <div className="space-y-6 animate-fade-in w-full">
         {/* Doctor header */}
         <div className="bg-card rounded-lg shadow-card p-6 flex flex-col md:flex-row md:items-center gap-4">
@@ -37,7 +42,7 @@ export default function DoctorPortal() {
               <FileText className="h-4 w-4" />
               Notas Fiscais
             </Button>
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2" onClick={() => setRevisaoOpen(true)}>
               <MessageSquare className="h-4 w-4" />
               Solicitar Revisão
             </Button>
