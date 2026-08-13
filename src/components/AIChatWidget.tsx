@@ -33,16 +33,21 @@ const MONTHS = [
   "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
 ];
 
+// Compara sem acento e em minúsculas — o usuário digita "marco", "mes", "honorarios"
+function norm(input: string) {
+  return input.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
+}
+
 function detectMonth(input: string): string | null {
-  const lower = input.toLowerCase();
+  const lower = norm(input);
   for (const m of MONTHS) {
-    if (lower.includes(m)) return m.charAt(0).toUpperCase() + m.slice(1);
+    if (lower.includes(norm(m))) return m.charAt(0).toUpperCase() + m.slice(1);
   }
   return null;
 }
 
 function detectGlosa(lower: string) {
-  return GLOSAS.find((g) => lower.includes(g.name.toLowerCase()) || lower.includes(g.code));
+  return GLOSAS.find((g) => lower.includes(norm(g.name)) || lower.includes(g.code));
 }
 
 function renderContent(content: string) {
@@ -62,11 +67,20 @@ function renderContent(content: string) {
 const WELCOME =
   "Olá, Dr.! 👋 Sou o assistente de honorários.\n\nPosso te ajudar com:\n- Consultar valores do mês\n- Ver glosas\n- Acompanhar pagamentos\n\n👉 O que deseja?";
 
+const QUICK_OPTIONS = ["Consultar honorários do mês", "Ver glosas", "Total do ano"];
+
+const ANNUAL_SUMMARY =
+  "📅 Resumo do Ano:\n\n- 💰 Total faturado: R$ 182.300,00\n- ✅ Total recebido: R$ 165.900,00\n- ⚠️ Em análise (glosas): R$ 16.400,00\n\n👉 Deseja detalhar por mês ou buscar por paciente?";
+
+function monthlySummary(month: string) {
+  return `Perfeito, Dr.! Aqui está o resumo de ${month}:\n\n- 💰 Total faturado: R$ 48.500,00\n- ✅ Total pago: R$ 42.300,00\n- ⚠️ Total glosado: R$ 6.200,00\n\n👉 Deseja ver mais detalhes ou consultar glosas?`;
+}
+
 export function AIChatWidget() {
   const [step, setStep] = useState<Step>("welcome");
   const [month, setMonth] = useState("Março");
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: 0, role: "assistant", content: WELCOME },
+    { id: 0, role: "assistant", content: WELCOME, options: QUICK_OPTIONS },
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -105,28 +119,34 @@ export function AIChatWidget() {
   }
 
   function processInput(userInput: string) {
-    const lower = userInput.toLowerCase().trim();
+    const lower = norm(userInput);
 
     switch (step) {
       case "welcome": {
-        if (
-          lower.includes("honorário") ||
-          lower.includes("mes") ||
-          lower.includes("mês") ||
-          lower.includes("valor")
-        ) {
-          respond("ask_month", "Claro! 📊\n\nQual mês você deseja consultar?");
+        const m = detectMonth(userInput);
+        if (m) {
+          // "Consultar abril" já vale como escolha do mês — não perguntar de novo
+          setMonth(m);
+          respond("monthly_summary", monthlySummary(m));
         } else if (lower.includes("ano") || lower.includes("total")) {
-          respond(
-            "annual_summary",
-            "📅 Resumo do Ano:\n\n- 💰 Total faturado: R$ 182.300,00\n- ✅ Total recebido: R$ 165.900,00\n- ⚠️ Em análise (glosas): R$ 16.400,00\n\n👉 Deseja detalhar por mês ou buscar por paciente?"
-          );
-        } else if (lower.includes("glosa")) {
+          respond("annual_summary", ANNUAL_SUMMARY);
+        } else if (
+          lower.includes("honorario") ||
+          lower.includes("mes") ||
+          lower.includes("valor") ||
+          lower.includes("glosa") ||
+          lower.includes("pagamento") ||
+          lower.includes("pago") ||
+          lower.includes("receb") ||
+          lower.includes("consultar")
+        ) {
           respond("ask_month", "Claro! 📊\n\nQual mês você deseja consultar?");
         } else {
           respond(
             "welcome",
-            "Entendido! Posso te ajudar com honorários, glosas ou pagamentos. O que deseja consultar?"
+            "Entendido! Posso te ajudar com honorários, glosas ou pagamentos. O que deseja consultar?",
+            undefined,
+            QUICK_OPTIONS
           );
         }
         break;
@@ -135,10 +155,7 @@ export function AIChatWidget() {
       case "ask_month": {
         const m = detectMonth(userInput) ?? "Março";
         setMonth(m);
-        respond(
-          "monthly_summary",
-          `Perfeito, Dr.! Aqui está o resumo de ${m}:\n\n- 💰 Total faturado: R$ 48.500,00\n- ✅ Total pago: R$ 42.300,00\n- ⚠️ Total glosado: R$ 6.200,00\n\n👉 Deseja ver mais detalhes ou consultar glosas?`
-        );
+        respond("monthly_summary", monthlySummary(m));
         break;
       }
 
@@ -153,15 +170,22 @@ export function AIChatWidget() {
             "glosa_summary",
             `Sim, Dr. Foram identificadas 3 glosas em ${month}.\n\nPrincipais motivos:\n- Falta de autorização prévia\n- Divergência de código\n- Documentação incompleta\n\n👉 Deseja ver os detalhes?`
           );
-        } else if (lower.includes("ano") || lower.includes("total")) {
-          respond(
-            "annual_summary",
-            "📅 Resumo do Ano:\n\n- 💰 Total faturado: R$ 182.300,00\n- ✅ Total recebido: R$ 165.900,00\n- ⚠️ Em análise (glosas): R$ 16.400,00\n\n👉 Deseja detalhar por mês ou buscar por paciente?"
-          );
+        } else if (lower.includes("ano")) {
+          respond("annual_summary", ANNUAL_SUMMARY);
+        } else if (detectMonth(userInput) || lower.includes("outro")) {
+          const outro = detectMonth(userInput);
+          if (outro) {
+            setMonth(outro);
+            respond("monthly_summary", monthlySummary(outro));
+          } else {
+            respond("ask_month", "Claro! 📊\n\nQual mês você deseja consultar?");
+          }
         } else {
           respond(
             "monthly_summary",
-            "Posso mostrar glosas, detalhes de pagamento ou consultar outro período. O que prefere?"
+            "Posso mostrar glosas, detalhes de pagamento ou consultar outro período. O que prefere?",
+            undefined,
+            ["Ver glosas", "Total do ano", "Consultar outro mês"]
           );
         }
         break;
@@ -253,10 +277,7 @@ export function AIChatWidget() {
       case "glosa_confirm":
       case "continue": {
         if (lower.includes("ano") || lower.includes("total")) {
-          respond(
-            "annual_summary",
-            "📅 Resumo do Ano:\n\n- 💰 Total faturado: R$ 182.300,00\n- ✅ Total recebido: R$ 165.900,00\n- ⚠️ Em análise (glosas): R$ 16.400,00\n\n👉 Deseja detalhar por mês ou buscar por paciente?"
-          );
+          respond("annual_summary", ANNUAL_SUMMARY);
         } else if (lower.includes("nota") || lower.includes("fiscal") || lower.includes("nf")) {
           respond(
             "continue",
